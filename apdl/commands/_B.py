@@ -1,0 +1,49 @@
+from ._A import AEND
+from ._APDLCommands import APDL_Commands
+
+BSTART = AEND + 1 
+class B(APDL_Commands):
+    BCSOPTION = BSTART      # Sets memory option for the sparse solver.
+    BETAD = BSTART + 1      # Defines the stiffness matrix multiplier for damping.
+    BF = BSTART + 2         # Defines a nodal body force load.
+    BFA = BSTART + 3        # Defines a body force load on an area.
+    BFADELE = BSTART + 4    # Deletes body force loads on an area.
+    BFALIST = BSTART + 5    # Lists the body force loads on an area.
+    BFCUM = BSTART + 6      # Specifies that nodal body force loads are to be accumulated.
+    BFDELE = BSTART + 7     # Deletes nodal body force loads.
+    BFE = BSTART + 8        # Defines an element body force load.
+    BFECUM = BSTART + 9     # Specifies whether to ignore subsequent element body force loads.
+    BFEDELE = BSTART + 10   # Deletes element body force loads.
+    BFELIST = BSTART + 11   # Lists the element body force loads.
+    BFESCAL = BSTART + 12   # Scales element body force loads.
+    BFK = BSTART + 13       # Defines a body force load at a keypoint.
+    BFKDELE = BSTART + 14   # Deletes body force loads at a keypoint.
+    BFKLIST = BSTART + 15   # Lists the body force loads at keypoints.
+    BFL = BSTART + 16       # Defines a body force load on a line.
+    BFLDELE = BSTART + 17   # Deletes body force loads on a line.
+    BFLLIST = BSTART + 18   # Lists the body force loads on a line.
+    BFSCALE = BSTART + 19   # Scales body force loads at nodes.
+    BFTRAN = BSTART + 20    # Transfers solid model body force loads to the finite element model.
+    BFUNIF = BSTART + 21    # Assigns a uniform body force load to all nodes.
+    BFV = BSTART + 22       # Defines a body force load on a volume.
+    BFVDELE = BSTART + 23   # Deletes body force loads on a volume.
+    BFVLIST = BSTART + 24   # Lists the body force loads on a volume.
+    BIOOPT = BSTART + 25    # Specifies "Biot-Savart options" as the subsequent status topic.
+    BIOT = BSTART + 26      # Calculates the Biot-Savart source magnetic field intensity.
+    BLC4 = BSTART + 27      # Creates a rectangular area or block volume by corner points.
+    BLC5 = BSTART + 28      # Creates a rectangular area or block volume by center and corner points.
+    BLOCK = BSTART + 29     # Creates a block volume based on working plane coordinates.
+    BOOL = BSTART + 30      # Specifies "Booleans" as the subsequent status topic.
+    BOPTN = BSTART + 31     # Specifies Boolean operation options.
+    BSAX = BSTART + 32      # Specifies the axial strain and axial force relationship for beam sections.
+    BSMD = BSTART + 33      # Specifies mass per unit length for a nonlinear general beam section.
+    BSM1 = BSTART + 34      # Specifies the bending curvature and moment relationship in plane XZ for beam sections.
+    BSM2 = BSTART + 35      # Specifies the bending curvature and moment relationship in plane XY for beam sections.
+    BSPLIN = BSTART + 36    # Generates a single line from a spline fit to a series of keypoints.
+    BSS1 = BSTART + 37      # Specifies the transverse shear strain and force relationship in plane XZ for beam sections.
+    BSS2 = BSTART + 38      # Specifies the transverse shear strain and force relationship in plane XY for beam sections.
+    BSTE = BSTART + 39      # Specifies a thermal expansion coefficient for a nonlinear general beam section.
+    BSTQ = BSTART + 40      # Specifies the cross section twist and torque relationship for beam sections.
+    BTOL = BSTART + 41      # Specifies the Boolean operation tolerances.
+    BUCOPT = BSTART + 42    # Specifies buckling analysis options.
+BEND = BSTART + len(B.__members__) - 1
