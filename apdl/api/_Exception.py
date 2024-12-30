@@ -1,0 +1,3 @@
+
+class NotaValidAPDLCommand(Exception):
+    pass
