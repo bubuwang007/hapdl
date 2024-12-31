@@ -12,4 +12,4 @@ class TokenInfo:
     end_column: int
 
     def __str__(self) -> str:
-        return f"TokenInfo({self.type}, \"{self.value}\", {self.line}, {self.column}, {self.end_column})"
+        return f"TokenInfo({self.type}, {self.value!r}, {self.line}, {self.column}, {self.end_column})"

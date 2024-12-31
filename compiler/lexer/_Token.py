@@ -6,6 +6,8 @@ class TokenType(enum.Enum):
     THREECHAR: dict
 
     NUMBER = 'num'
+    FLOAT = 'float'
+    COMPLEX = 'complex'
     STRING = 'str'
     KEYWORD = 'keyword'
     IDENTIFIER = 'id'
@@ -27,6 +29,7 @@ class TokenType(enum.Enum):
     EQARROW = '=>'
 
     EQ = '='
+    EQEQ = '=='
     NE = '!='
     NOT = '!'
 
@@ -63,21 +66,21 @@ class TokenType(enum.Enum):
         return "Token." + self.name
 
     @classmethod
-    def get_three_char_symbol(cls, c1, c2, c3):
+    def get_three_char_symbol(cls, c1, c2, c3) -> "TokenType|None":
         try:
             return cls.THREECHAR.get(c1).get(c2).get(c3)
         except:
             return None
         
     @classmethod
-    def get_two_char_symbol(cls, c1, c2):
+    def get_two_char_symbol(cls, c1, c2) -> "TokenType|None":
         try:
             return cls.TWOCHAR.get(c1).get(c2)
         except:
             return None
         
     @classmethod
-    def get_one_char_symbol(cls, c):
+    def get_one_char_symbol(cls, c) -> "TokenType|None":
         try:
             return cls.ONECHAR.get(c)
         except:
@@ -112,16 +115,17 @@ TokenType.ONECHAR = {
 
 TokenType.TWOCHAR = {
     '!': {'=': TokenType.NE},
-    '-': {'>': TokenType.MINUSARROW},
-    '=': {'>': TokenType.EQARROW},
+    '-': {'>': TokenType.MINUSARROW,
+          '=': TokenType.MINUSEQ},
+    '=': {'>': TokenType.EQARROW,
+          '=': TokenType.EQEQ},
     '+': {'=': TokenType.PLUSEQ},
-    '-': {'=': TokenType.MINUSEQ},
     '*': {'=': TokenType.STAREQ,
           '*': TokenType.DOUBLESTAR},
-    '/': {'=': TokenType.SLASHEQ},
+    '/': {'=': TokenType.SLASHEQ,
+          '/': TokenType.DOUBLESLASH},
     '@': {'=': TokenType.ATEQ},
     '%': {'=': TokenType.PERCENTEQ},
-    '/': {'/': TokenType.DOUBLESLASH},
     '&': {'=': TokenType.AMPEREQ},
     '|': {'=': TokenType.VBAREQ},
     '^': {'=': TokenType.CIRCUMFLEXEQ},
@@ -132,5 +136,6 @@ TokenType.TWOCHAR = {
 TokenType.THREECHAR = {
     '*': {'*': {'=': TokenType.DOUBLESTAREQ}},
     '/': {'/': {'=': TokenType.DOUBLESLASHEQ}},
+    '.': {'.': {'.': TokenType.ELLIPSIS}},
 }
     

@@ -1,6 +1,7 @@
 from ._TokenInfo import TokenInfo
 from ._Token import TokenType
-from typing import Any, Generator
+from ._Keywords import Keywords
+from typing import Generator
 
 class Lexer:
 
@@ -21,6 +22,14 @@ class Lexer:
             return None
         else:
             return self.string[self.current+n-1]
+
+    @staticmethod
+    def is_potential_identifier_start(c: str) -> bool:
+        return c.isalpha() or c == "_"
+    
+    @staticmethod
+    def is_potential_identifier(c: str) -> bool:
+        return c.isalnum() or c == "_" or c.isdigit()
 
     def token_get(self) -> Generator[TokenInfo, None, None]:
         self.current = 0
@@ -47,8 +56,19 @@ class Lexer:
             if c == '#':
                 yield self.__get_comment()
                 continue
+            
+            if c == '"':
+                yield self.__get_string()
+                continue
 
+            if self.is_potential_identifier_start(c):
+                yield self.__get_identifier_or_keywords()
+                continue
 
+            tok = self.__get_symbol(c)
+            if tok is not None:
+                yield tok
+                continue
 
             self.current += 1
             self.column += 1
@@ -64,32 +84,92 @@ class Lexer:
             self.current += 1
             self.column += 1
 
-    def __get_three_char_symbol(self) -> TokenInfo:
-        tok = self.string[self.current:self.current + 3]
-        test = TokenType.THREECHAR.get(tok)
-        if test is not None:
-            token = TokenInfo(test, tok, self.line, self.column, self.end_column)
-            self.current += 3
-            return token
-        else:
-            return self.__get_two_char_symbol()
-        
-    def __get_two_char_symbol(self) -> TokenInfo:
-        tok = self.string[self.current:self.current + 2]
-        test = TokenType.TWOCHAR.get(tok)
-        if test is not None:
-            token = TokenInfo(test, tok, self.line, self.column, self.end_column)
-            self.current += 2
-            return token
-        else:
-            return self.__get_one_char_symbol()
-        
-    def __get_one_char_symbol(self) -> TokenInfo:
-        tok = self.string[self.current]
-        test = TokenType.ONECHAR.get(tok)
-        if test is not None:
-            token = TokenInfo(test, tok, self.line, self.column, self.end_line, self.end_column)
+    def __get_string(self) -> TokenInfo:
+        self.current += 1
+        self.column += 1
+        s = []
+        while True:
+            c = self.next_char()
+            if c is None or c == "\n":
+                raise Exception("Unterminated string")
+            elif c == "\\":
+                self.current += 1
+                self.column += 1
+                t = self.next_char()
+                match t:
+                    case "n":
+                        s.append("\n")
+                    case "t":
+                        s.append("\t")
+                    case "\\":
+                        s.append("\\")
+                    case '"':
+                        s.append('\"')
+                    case "0":
+                        s.append("\0")
+                    case "r":
+                        s.append("\r")
+                    case "b":
+                        s.append("\b")
+                    case "f":
+                        s.append("\f")
+                    case "v":
+                        s.append("\v")
+                    case "a":
+                        s.append("\a")
+                    case _:
+                        raise Exception(f"Invalid escape sequence: \\{t}")
+            elif c == '"':
+                self.current += 1
+                self.column += 1
+                return TokenInfo(TokenType.STRING, "".join(s), 
+                         self.line, self.start_column, self.column-1)
+            else:
+                s.append(c)
             self.current += 1
-            return token
+            self.column += 1
+
+    def __get_identifier_or_keywords(self) -> TokenInfo:
+        while True:
+            c = self.next_char()
+            if c is None or not self.is_potential_identifier(c):
+                tok = self.string[self.start:self.current]
+                kw = Keywords.get(tok)
+                if kw is not None:
+                    return TokenInfo(kw, tok, self.line, self.start_column, self.column-1)
+                else:
+                    return TokenInfo(TokenType.IDENTIFIER, tok, self.line, self.start_column, self.column-1)
+            self.current += 1
+            self.column += 1  
+
+    def __get_symbol(self, c: str) -> TokenInfo:
+        return self.__get_three_char_symbol(c)
+
+    def __get_three_char_symbol(self, c1: str) -> TokenInfo:
+        c2 = self.next_char(2)
+        c3 = self.next_char(3)
+        tok = TokenType.get_three_char_symbol(c1, c2, c3)
+        if tok is not None:
+            self.current += 3
+            self.column += 3
+            return TokenInfo(tok, tok.value, self.line, self.start_column, self.column-1)
         else:
-            raise ValueError(f"Unknown symbol: {tok}, at line {self.line}, column {self.column}")
+            return self.__get_two_char_symbol(c1, c2)
+
+    def __get_two_char_symbol(self, c1: str, c2: str) -> TokenInfo:
+        tok = TokenType.get_two_char_symbol(c1, c2)
+        if tok is not None:
+            self.current += 2
+            self.column += 2
+            return TokenInfo(tok, tok.value, self.line, self.start_column, self.column-1)
+        else:
+            return self.__get_one_char_symbol(c1)
+        
+    def __get_one_char_symbol(self, c1: str) -> TokenInfo:
+        tok = TokenType.get_one_char_symbol(c1)
+        if tok is not None:
+            self.current += 1
+            self.column += 1
+            return TokenInfo(tok, tok.value, self.line, self.start_column, self.column-1)
+        else:
+            return None
