@@ -1,105 +1,136 @@
 import enum
 
 class TokenType(enum.Enum):
-    SYMBOLS: dict
+    ONECHAR: dict
+    TWOCHAR: dict
+    THREECHAR: dict
 
-    NUMBER = 0
-    STRING = 1
-    KEYWORD = 2
-    IDENTIFIER = 3
-    NEWLINE = 4
+    NUMBER = 'num'
+    STRING = 'str'
+    KEYWORD = 'keyword'
+    IDENTIFIER = 'id'
+    COMMENT = 'comment'
+    # NEWLINE = 'newline'
 
-    ELLIPSIS = 5
-    SEMICOLON = 6
-    COMMA = 7
-    COLON = 8
-    DOT = 9
-    LBRACE = 10
-    RBRACE = 11
-    LPAR = 12
-    RPAR = 13
-    LSQB = 14
-    RSQB = 15
-    SLASH = 16
-    MINUSARROW = 17
-    EQARROW = 18
+    ELLIPSIS = '...'
+    SEMICOLON = ';'
+    COMMA = ','
+    COLON = ':'
+    DOT = '.'
+    LBRACE = '{'
+    RBRACE = '}'
+    LPAR = '('
+    RPAR = ')'
+    LSQB = '['
+    RSQB = ']'
+    MINUSARROW = '->'
+    EQARROW = '=>'
 
-    EQ = 19
-    NE = 20
-    NOT = 21
+    EQ = '='
+    NE = '!='
+    NOT = '!'
 
-    PLUS = 22
-    MINUS = 23
-    STAR = 24
-    SLASH = 25
-    AT = 26
-    PERCENT = 27
-    DOUBLESTAR = 28
-    DOUBLESLASH = 29
-    AMPER = 30
-    VBAR = 31
-    CIRCUMFLEX = 32
+    PLUS = '+'
+    MINUS = '-'
+    STAR = '*'
+    SLASH = '/'
+    AT = '@'
+    PERCENT = '%'
+    DOUBLESTAR = '**'
+    DOUBLESLASH = '//'
+    AMPER = '&'
+    VBAR = '|'
+    CIRCUMFLEX = '^'
 
-    PLUSEQ = 33
-    MINUSEQ = 34
-    STAREQ = 35
-    SLASHEQ = 36
-    ATEQ = 37
-    PERCENTEQ = 38
-    DOUBLESTAREQ = 39
-    DOUBLESLASHEQ = 40
-    AMPEREQ = 41
-    VBAREQ = 42
-    CIRCUMFLEXEQ = 43
+    PLUSEQ = '+='
+    MINUSEQ = '-='
+    STAREQ = '*='
+    SLASHEQ = '/='
+    ATEQ = '@='
+    PERCENTEQ = '%='
+    DOUBLESTAREQ = '**='
+    DOUBLESLASHEQ = '//='
+    AMPEREQ = '&='
+    VBAREQ = '|='
+    CIRCUMFLEXEQ = '^='
 
-    LT = 44
-    GT = 45
-    LE = 46
-    GE = 47
+    LT = '<'
+    GT = '>'
+    LE = '<='
+    GE = '>='
 
-TokenType.SYMBOLS = {
-    TokenType.ELLIPSIS: '...',
-    TokenType.SEMICOLON: ';',
-    TokenType.COMMA: ',',
-    TokenType.COLON: ':',
-    TokenType.DOT: '.',
-    TokenType.LBRACE: '{',
-    TokenType.RBRACE: '}',
-    TokenType.LPAR: '(',
-    TokenType.RPAR: ')',
-    TokenType.LSQB: '[',
-    TokenType.RSQB: ']',
-    TokenType.SLASH: '/',
-    TokenType.MINUSARROW: '->',
-    TokenType.EQARROW: '=>',
-    TokenType.EQ: '=',
-    TokenType.NE: '!=',
-    TokenType.NOT: '!',
-    TokenType.PLUS: '+',
-    TokenType.MINUS: '-',
-    TokenType.STAR: '*',
-    TokenType.SLASH: '/',
-    TokenType.AT: '@',
-    TokenType.PERCENT: '%',
-    TokenType.DOUBLESTAR: '**',
-    TokenType.DOUBLESLASH: '//',
-    TokenType.AMPER: '&',
-    TokenType.VBAR: '|',
-    TokenType.CIRCUMFLEX: '^',
-    TokenType.PLUSEQ: '+=',
-    TokenType.MINUSEQ: '-=',
-    TokenType.STAREQ: '*=',
-    TokenType.SLASHEQ: '/=',
-    TokenType.ATEQ: '@=',
-    TokenType.PERCENTEQ: '%=',
-    TokenType.DOUBLESTAREQ: '**=',
-    TokenType.DOUBLESLASHEQ: '//=',
-    TokenType.AMPEREQ: '&=',
-    TokenType.VBAREQ: '|=',
-    TokenType.CIRCUMFLEXEQ: '^=',
+    def __str__(self) -> str:
+        return "Token." + self.name
 
-    TokenType.LT: '<',
-    TokenType.GT: '>',
-    TokenType.LE: '<=',
-    TokenType.GE: '>='
+    @classmethod
+    def get_three_char_symbol(cls, c1, c2, c3):
+        try:
+            return cls.THREECHAR.get(c1).get(c2).get(c3)
+        except:
+            return None
+        
+    @classmethod
+    def get_two_char_symbol(cls, c1, c2):
+        try:
+            return cls.TWOCHAR.get(c1).get(c2)
+        except:
+            return None
+        
+    @classmethod
+    def get_one_char_symbol(cls, c):
+        try:
+            return cls.ONECHAR.get(c)
+        except:
+            return None
+
+
+TokenType.ONECHAR = {
+    ';': TokenType.SEMICOLON,
+    ',': TokenType.COMMA,
+    ':': TokenType.COLON,
+    '.': TokenType.DOT,
+    '{': TokenType.LBRACE,
+    '}': TokenType.RBRACE,
+    '(': TokenType.LPAR,
+    ')': TokenType.RPAR,
+    '[': TokenType.LSQB,
+    ']': TokenType.RSQB,
+    '=': TokenType.EQ,
+    '!': TokenType.NOT,
+    '+': TokenType.PLUS,
+    '-': TokenType.MINUS,
+    '*': TokenType.STAR,
+    '/': TokenType.SLASH,
+    '@': TokenType.AT,
+    '%': TokenType.PERCENT,
+    '&': TokenType.AMPER,
+    '|': TokenType.VBAR,
+    '^': TokenType.CIRCUMFLEX,
+    '<': TokenType.LT,
+    '>': TokenType.GT,
 }
+
+TokenType.TWOCHAR = {
+    '!': {'=': TokenType.NE},
+    '-': {'>': TokenType.MINUSARROW},
+    '=': {'>': TokenType.EQARROW},
+    '+': {'=': TokenType.PLUSEQ},
+    '-': {'=': TokenType.MINUSEQ},
+    '*': {'=': TokenType.STAREQ,
+          '*': TokenType.DOUBLESTAR},
+    '/': {'=': TokenType.SLASHEQ},
+    '@': {'=': TokenType.ATEQ},
+    '%': {'=': TokenType.PERCENTEQ},
+    '/': {'/': TokenType.DOUBLESLASH},
+    '&': {'=': TokenType.AMPEREQ},
+    '|': {'=': TokenType.VBAREQ},
+    '^': {'=': TokenType.CIRCUMFLEXEQ},
+    '<': {'=': TokenType.LE},
+    '>': {'=': TokenType.GE},
+}
+
+TokenType.THREECHAR = {
+    '*': {'*': {'=': TokenType.DOUBLESTAREQ}},
+    '/': {'/': {'=': TokenType.DOUBLESLASHEQ}},
+}
+    

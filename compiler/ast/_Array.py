@@ -1,0 +1,14 @@
+from ._Ast import Ast
+
+class Array(Ast):
+    _fields = ['elements']
+    lineno = 0
+    col_offset = 0
+    end_lineno = 0
+    end_col_offset = 0
+
+    def __init__(self, elements):
+        self.elements = elements
+
+    def __repr__(self):
+        return f"<Array {self.elements}>"
