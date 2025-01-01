@@ -17,6 +17,7 @@ class Keywords(enum.Enum):
     OR = 'or'
 
     IMPORT = 'import'
+    PYIMPORT = 'pyimport'
     FROM = 'from'
     AS = 'as'
 

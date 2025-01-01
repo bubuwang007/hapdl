@@ -93,13 +93,62 @@ class TestLexer(unittest.TestCase):
             self.assertEqual(tok.type.value, r)
             self.assertEqual(tok.value, r)
 
+    def test_integer(self):
+        lexer = Lexer.from_string("01234567890")
+        tok = next(lexer.token_get())
+        self.assertEqual(tok.type.value, "int")
+        self.assertEqual(tok.value, "01234567890")
+
+    def test_float(self):
+        lexer = Lexer.from_string("0.1234567890")
+        tok = next(lexer.token_get())
+        self.assertEqual(tok.type.value, "float")
+        self.assertEqual(tok.value, "0.1234567890")
+
+        lexer = Lexer.from_string("1234567890.0")
+        tok = next(lexer.token_get())
+        self.assertEqual(tok.type.value, "float")
+        self.assertEqual(tok.value, "1234567890.0")
+
+        lexer = Lexer.from_string("1234567890.1234567890")
+        tok = next(lexer.token_get())
+        self.assertEqual(tok.type.value, "float")
+        self.assertEqual(tok.value, "1234567890.1234567890")
+
+    def test_scientific(self):
+        test = ['1e10', '1e-10', '1E+10', '1E-10', '1.0e10', '1.0e-10', '1.0E10', '1.0e+10', '1.0E-10']
+        for t in test:
+            lexer = Lexer.from_string(t)
+            tok = next(lexer.token_get())
+            self.assertEqual(tok.type.value, "float")
+            self.assertEqual(tok.value, t)
+
+    def test_imaginary(self):
+        lexer = Lexer.from_string("1j 1.0j 1e10j 1.0e10j")
+        res = ['1j', '1.0j', '1e10j', '1.0e10j']
+        tokenizer = lexer.token_get()
+        for r in res:
+            tok = next(tokenizer)
+            self.assertEqual(tok.type.value, "image")
+            self.assertEqual(tok.value, r)
+
+    def test_keyword(self):
+        lexer = Lexer.from_string("true false none let del break continue and or import from as enum struct trait impl func inline return if else elif while for in match raise try except finally extern global pub nonlocal const")
+        res = ['true', 'false', 'none', 'let', 'del', 'break', 'continue', 'and', 'or', 'import', 'from', 'as', 'enum', 'struct', 'trait', 'impl', 'func', 'inline', 'return', 'if', 'else', 'elif', 'while', 'for', 'in', 'match', 'raise', 'try', 'except', 'finally', 'extern', 'global', 'pub', 'nonlocal', 'const']
+        tokenizer = lexer.token_get()
+        for r in res:
+            tok = next(tokenizer)
+            self.assertEqual(tok.value, r)
+
     def test_lexer(self):
         p = os.path.abspath('./test.hapdl')
         lexer = Lexer.from_file(p)
         count = 0
+        f = open('res.tok', "w", encoding="u8")
         for tok in lexer.token_get():
-            print(tok)
+            print(tok, file=f)
             count += 1
+        f.close()
 
 
 if __name__ == '__main__':

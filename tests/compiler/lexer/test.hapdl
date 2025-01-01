@@ -1,16 +1,49 @@
 
-import os
-import numpy as np
+pyimport os;
+import numpy as np;
 
-let a: str = "Hello, World!\n"
-->
-**=
-+=
-*
-/
-let a: type = 10
-a = 123
-_bcd = 456
-aac3 = 789
-# 123
-123 # 123
+# This is a comment
+let a:num = 125.567; # 125.567
+let global const b: complex = 1 + 5j;
+let c: num = 1;
+let a: str = "Hello, World!\n";
+# let s: str = "Hello, World!\8";
+
+struct Point {
+    x: num;
+    y: num;
+}
+
+impl Point {
+    func new(x: num, y: num) -> Point {
+        Point { x: x, y: y }
+    }
+
+    func distance(&self, other: Point) -> num {
+        let x_diff = self.x - other.x;
+        let y_diff = self.y - other.y;
+        (x_diff ** 2 + y_diff ** 2) ** 0.5
+    }
+}
+
+for i in range(10) {
+    print(i);
+}
+
+while c < 10 {
+    print(c);
+    c += 1;
+}
+
+if c == 10 {
+    print("c is 10");
+} else {
+    print("c is not 10");
+}
+
+match c {
+    1 => print("c is 1"),
+    2 => print("c is 2"),
+    3 => print("c is 3"),
+    _ => print("c is not 1, 2, or 3")
+}

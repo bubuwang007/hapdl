@@ -5,9 +5,9 @@ class TokenType(enum.Enum):
     TWOCHAR: dict
     THREECHAR: dict
 
-    NUMBER = 'num'
+    INTEGER = 'int'
     FLOAT = 'float'
-    COMPLEX = 'complex'
+    IMAGE = 'image'
     STRING = 'str'
     KEYWORD = 'keyword'
     IDENTIFIER = 'id'

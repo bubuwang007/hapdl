@@ -1,3 +1,4 @@
+import os
 from ._TokenInfo import TokenInfo
 from ._Token import TokenType
 from ._Keywords import Keywords
@@ -5,7 +6,8 @@ from typing import Generator
 
 class Lexer:
 
-    def __init__(self, string: str):
+    def __init__(self, string: str, file: str=None):
+        self.file = os.path.abspath(file) if file is not None else "<string>"
         self.string = string
 
     @staticmethod
@@ -15,7 +17,7 @@ class Lexer:
     @staticmethod
     def from_file(file: str) -> "Lexer":
         with open(file, "r", encoding="u8") as f:
-            return Lexer(f.read())
+            return Lexer(f.read(), file)
 
     def next_char(self, n: int=1) -> str:
         if self.current + n > len(self.string):
@@ -23,13 +25,16 @@ class Lexer:
         else:
             return self.string[self.current+n-1]
 
+    def __posinfo(self) -> str:
+        return f"File \"{self.file}\", line {self.line}, col {self.start_column}"
+
     @staticmethod
     def is_potential_identifier_start(c: str) -> bool:
         return c.isalpha() or c == "_"
     
     @staticmethod
     def is_potential_identifier(c: str) -> bool:
-        return c.isalnum() or c == "_" or c.isdigit()
+        return c.isalnum() or c == "_"
 
     def token_get(self) -> Generator[TokenInfo, None, None]:
         self.current = 0
@@ -40,6 +45,10 @@ class Lexer:
             self.start = self.current
             self.start_column = self.column
             c = self.next_char()
+
+            if c is None:
+                break
+
             if c in [" ", "\t"]:
                 self.current += 1
                 self.column += 1
@@ -49,9 +58,6 @@ class Lexer:
                 self.line += 1
                 self.column = 1
                 continue
-
-            if c is None:
-                break
 
             if c == '#':
                 yield self.__get_comment()
@@ -65,11 +71,16 @@ class Lexer:
                 yield self.__get_identifier_or_keywords()
                 continue
 
+            if c.isdigit():
+                yield self.__get_number()
+                continue
+
             tok = self.__get_symbol(c)
             if tok is not None:
                 yield tok
                 continue
 
+            raise Exception(f"Invalid character at {self.__posinfo()}: {c}")
             self.current += 1
             self.column += 1
 
@@ -91,7 +102,7 @@ class Lexer:
         while True:
             c = self.next_char()
             if c is None or c == "\n":
-                raise Exception("Unterminated string")
+                raise Exception(f"Unterminated string at {self.__posinfo()}")
             elif c == "\\":
                 self.current += 1
                 self.column += 1
@@ -118,7 +129,8 @@ class Lexer:
                     case "a":
                         s.append("\a")
                     case _:
-                        raise Exception(f"Invalid escape sequence: \\{t}")
+                        self.start_column = self.column
+                        raise Exception(f"Invalid escape sequence at {self.__posinfo()}: \\{t}")
             elif c == '"':
                 self.current += 1
                 self.column += 1
@@ -128,6 +140,71 @@ class Lexer:
                 s.append(c)
             self.current += 1
             self.column += 1
+
+    def __get_number(self) -> TokenInfo:
+        return self.__get_integer()
+
+    def __get_integer(self) -> TokenInfo:
+
+        while True:
+            c = self.next_char()
+            if c == '.':
+                self.current += 1
+                self.column += 1
+                return self.__get_float()
+            elif c == 'e' or c == 'E':
+                self.current += 1
+                self.column += 1
+                return self.__get_scientific()
+            elif c == 'j' or c == 'J':
+                self.current += 1
+                self.column += 1
+                return TokenInfo(TokenType.IMAGE, self.string[self.start:self.current], 
+                         self.line, self.start_column, self.column-1)
+            elif c is None or not c.isdigit():
+                return TokenInfo(TokenType.INTEGER, self.string[self.start:self.current], 
+                         self.line, self.start_column, self.column-1)
+            elif c.isdigit():
+                self.current += 1
+                self.column += 1
+
+    def __get_float(self) -> TokenInfo:
+        while True:
+            c = self.next_char()
+            if c == 'e' or c == 'E':
+                self.current += 1
+                self.column += 1
+                return self.__get_scientific()
+            elif c == 'j' or c == 'J':
+                self.current += 1
+                self.column += 1
+                return TokenInfo(TokenType.IMAGE, self.string[self.start:self.current], 
+                         self.line, self.start_column, self.column-1)
+            elif c is None or not c.isdigit():
+                return TokenInfo(TokenType.FLOAT, self.string[self.start:self.current], 
+                         self.line, self.start_column, self.column-1)
+            elif c.isdigit():
+                self.current += 1
+                self.column += 1
+
+    def __get_scientific(self) -> TokenInfo:
+        c = self.next_char()
+        if c == '+' or c == '-':
+            self.current += 1
+            self.column += 1
+        while True:
+            c = self.next_char()
+            if c == 'j' or c == 'J':
+                self.current += 1
+                self.column += 1
+                return TokenInfo(TokenType.IMAGE, self.string[self.start:self.current], 
+                         self.line, self.start_column, self.column-1)
+            elif c is None or not c.isdigit():
+                return TokenInfo(TokenType.FLOAT, self.string[self.start:self.current], 
+                         self.line, self.start_column, self.column-1)
+            elif c.isdigit():
+                self.current += 1
+                self.column += 1
 
     def __get_identifier_or_keywords(self) -> TokenInfo:
         while True:
@@ -140,8 +217,8 @@ class Lexer:
                 else:
                     return TokenInfo(TokenType.IDENTIFIER, tok, self.line, self.start_column, self.column-1)
             self.current += 1
-            self.column += 1  
-
+            self.column += 1
+      
     def __get_symbol(self, c: str) -> TokenInfo:
         return self.__get_three_char_symbol(c)
 
