@@ -12,3 +12,4 @@ class Processor(enum.Enum):
     aux12 = "/AUX12"
     aux15 = "/AUX15"
     runstat = "/RUNSTAT"
+    any = ""

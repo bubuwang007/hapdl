@@ -1,4 +1,4 @@
-from .._api import _api
+from .._api import _api, Processor
 
 class CLEAR(_api):
     '''
@@ -8,6 +8,7 @@ class CLEAR(_api):
     Additional commands cannot be stacked (via the $ separator) on the same line as the /CLEAR command.
     Use caution when placing the /CLEAR command within branching constructs (for example, those using *DO or *IF commands), as the command deletes all parameters including the looping parameter for do-loops. (To preserve your iteration parameter, issue a PARSAV command prior to /CLEAR, then follow /CLEAR with a PARRES command.)
     '''
+    processor = Processor.any
 
     @classmethod
     def call(cls, *args) -> str:
@@ -28,15 +29,15 @@ class CLEAR(_api):
 
         return True
 
-    @classmethod
-    def start(cls) -> str:
+    @staticmethod
+    def start() -> str:
         '''
         Reread start.ans file (default).
         '''
         return "/CLEAR,START"
     
-    @classmethod
-    def nostart(cls) -> str:
+    @staticmethod
+    def nostart() -> str:
         '''
         Do not reread start.ans file.
         '''

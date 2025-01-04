@@ -1,6 +1,6 @@
 
 class Ast:
-    _fields: list["Ast"]
+    _fields: list
     lineno: int
     col_offset: int
     end_lineno: int

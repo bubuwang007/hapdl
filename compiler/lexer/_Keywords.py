@@ -22,9 +22,9 @@ class Keywords(enum.Enum):
     AS = 'as'
 
     ENUM = 'enum'
-    STRUCT = 'struct'
-    TRAIT = 'trait'
-    IMPL = 'impl'
+    CLASS = 'class'
+    # TRAIT = 'trait'
+    # IMPL = 'impl'
 
     FUNC = 'func'
     INLINE = 'inline'
@@ -36,6 +36,7 @@ class Keywords(enum.Enum):
     WHILE = 'while'
     FOR = 'for'
     IN = 'in'
+    NOT = 'not'
     MATCH = 'match'
 
     RAISE = 'raise'

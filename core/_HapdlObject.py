@@ -5,10 +5,10 @@ if typing.TYPE_CHECKING:
 
 class HapdlObject:
     name: str
-    type: "HapdlType"
+    type: HapdlType
     frame: Frame
 
-    def __init__(self, name: str, type: "HapdlType", frame: Frame = None) -> None:
+    def __init__(self, name: str, type: HapdlType, frame: Frame = None) -> None:
         self.name = name
         self.type = type
         self.frame = frame

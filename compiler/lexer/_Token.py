@@ -71,14 +71,14 @@ class TokenType(enum.Enum):
             return cls.THREECHAR.get(c1).get(c2).get(c3)
         except:
             return None
-        
+
     @classmethod
     def get_two_char_symbol(cls, c1, c2) -> "TokenType|None":
         try:
             return cls.TWOCHAR.get(c1).get(c2)
         except:
             return None
-        
+
     @classmethod
     def get_one_char_symbol(cls, c) -> "TokenType|None":
         try:
