@@ -17,6 +17,14 @@ class IF:
         self.commands.indent_up()
         return self.commands
 
+    def THEN_BOOL(self, expr1):
+        if self.state is not None:
+            raise ValueError("THEN command must be after IF command.")
+        self.commands << f"*IF,{expr1},THEN"
+        self.state = 'then'
+        self.commands.indent_up()
+        return self.commands
+
     def ELSEIF(self, expr1, op, expr2, check=True):
         if self.state != 'then':
             raise ValueError("ELSEIF must be after THEN.")
@@ -25,6 +33,15 @@ class IF:
                 raise ValueError("Operator must be one of EQ, NE, LT, LE, GT, GE, ABGT, ABLT.")
         self.commands.indent_down()
         self.commands << f"*ELSEIF,{expr1},{op},{expr2}"
+        self.commands.indent_up()
+        self.state = 'then'
+        return self.commands
+
+    def ELSEIF_BOOL(self, expr1):
+        if self.state != 'then':
+            raise ValueError("ELSEIF must be after THEN.")
+        self.commands.indent_down()
+        self.commands << f"*ELSEIF,{expr1}"
         self.commands.indent_up()
         self.state = 'then'
         return self.commands

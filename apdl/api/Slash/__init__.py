@@ -3,3 +3,10 @@ from ._PSEARCH import PSEARCH
 from ._FILNAME import FILNAME
 from ._TITLE import TITLE
 from ._CWD import CWD
+from ._UIS import UIS
+from ._VIEW import VIEW
+from ._ANGLE import ANGLE
+from ._AUTO import AUTO
+from ._NOPR import NOPR
+from ._GO import GO
+from ._GOPR import GOPR

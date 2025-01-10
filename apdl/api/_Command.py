@@ -4,9 +4,9 @@ class Command:
     cmd: str
     indent: int
 
-    def __init__(self, cmd: str, level: int = 0, comment=""):
+    def __init__(self, cmd: str, indent: int = 0, comment=""):
         self.cmd = cmd
-        self.indent = level
+        self.indent = indent
         self.comment = comment
 
     def __str__(self) -> str:

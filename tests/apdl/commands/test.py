@@ -4,6 +4,7 @@ from hapdl.apdl.commands._A import A, ASTART, AEND
 from hapdl.apdl.commands._B import B, BSTART, BEND
 from hapdl.apdl.commands._C import C, CSTART, CEND
 from hapdl.apdl.commands._D import D, DSTART, DEND
+from hapdl.apdl.commands._E import E, ESTART, EEND
 
 class TestCommand(unittest.TestCase):
 
@@ -41,6 +42,14 @@ class TestCommand(unittest.TestCase):
         self.assertEqual(D.get_command(D.D), "D")
         self.assertEqual(D.is_apdl_command("D"), True)
         self.assertEqual(DEND, DSTART + len(D.__members__)-1)
+
+    def test_e(self):
+        self.assertEqual(E.E.value, ESTART)
+        self.assertEqual(E.EDCLIST.value, ESTART+11)
+        self.assertEqual(E.EXUNIT.value, EEND)
+        self.assertEqual(E.get_command(E.E), "E")
+        self.assertEqual(E.is_apdl_command("E"), True)
+        self.assertEqual(EEND, ESTART + len(E.__members__)-1)
 
 if __name__ == '__main__':
     unittest.main()

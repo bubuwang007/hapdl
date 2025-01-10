@@ -25,7 +25,7 @@ class CM(_api):
                 raise ValueError("Name of the component must be up to 32 characters.")
             if entity_type.upper() not in ['VOLU', 'AREA', 'LINE', 'KP', 'ELEM', 'NODE']:
                 raise ValueError("Type of the entities must be one of VOLU, AREA, LINE, KP, ELEM, NODE.")
-        return f"CM,{entity_type},{name}"
+        return f"CM,{name},{entity_type}"
     
     @staticmethod
     def create_volu(name: str, check: bool = True):

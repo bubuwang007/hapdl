@@ -1,11 +1,11 @@
 
 class Comment:
     content: str
-    level: int
+    indent: int
 
-    def __init__(self, content: str, level: int = 0):
+    def __init__(self, content: str, indent: int = 0):
         self.content = content
-        self.level = level
+        self.indent = indent
 
     def __str__(self) -> str:
-        return " "*4*self.level + f"! {self.content}"
+        return " "*4*self.indent + f"! {self.content}"
