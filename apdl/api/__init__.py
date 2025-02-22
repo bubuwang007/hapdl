@@ -15,3 +15,4 @@ from .M import *
 from .S import *
 
 from .Slash import *
+from .Star import *
